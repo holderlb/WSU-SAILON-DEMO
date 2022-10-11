@@ -40,8 +40,6 @@ class Agents:
 
         # Visual Novelty
         self.last = [10] * 4
-        self.lastlast = [10] * 4
-
 
         return None
 
@@ -208,19 +206,17 @@ class Agents:
 
     # Visual Novlety 110
     def teleport(self, state, commands):
-        # Update health table
-        current_health = []
-        for ind, val in enumerate(state['enemies']):
-            current_health.append(val['health'])
-
         # Do logic
         for ind, val in enumerate(state['enemies']):
             # Check for double shots
             if current_health[ind] != self.last[ind]:
                 commands[self.id_to_cvar[val['id']] - 1] = "set ai_" + str(self.id_to_cvar[val['id']]) + " " + str(9)
 
-        # Update last tables
-        self.lastlast = self.last
+        # Update health table
+        current_health = []
+        for ind, val in enumerate(state['enemies']):
+            current_health.append(val['health'])
+
         self.last = current_health
 
         return commands
