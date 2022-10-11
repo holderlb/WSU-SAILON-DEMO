@@ -110,8 +110,14 @@ class TestLoader:
     def load_test(self):
         # Filter by domain
         if self.domain == 'cartpole':
+
+            if self.novelty_level == 200:
+                from .envs.cartpolepp.p_0 import CartPole as CartPole
+            elif self.novelty_level == 110:
+                from .envs.cartpolepp.p_4 import CartPole as CartPole
+
             # Filter by novelty level
-            if self.level == 0 and not self.use_phase_one:
+            elif self.level == 0 and not self.use_phase_one:
                 from .envs.cartpolepp.n_0 import CartPole
 
             # Mocks

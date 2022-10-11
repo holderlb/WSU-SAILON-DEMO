@@ -414,10 +414,10 @@ class CartPoleBulletEnv(gym.Env):
             fov = 100
 
         elif dist == 'close':
-            base_pos = [4.45, 4.45, 2.0]
+            base_pos = [0, 4.45, 2.0]
             cam_dist = 0.1
             cam_pitch = -15.0
-            cam_yaw = 45.0 + 90
+            cam_yaw = 90.0 + 90
             cam_roll = 0.0
             fov = 60
 

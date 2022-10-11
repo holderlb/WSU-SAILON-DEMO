@@ -83,13 +83,18 @@ class User:
 
     def draw_game(self, game_screen):
         surf = pygame.surfarray.make_surface(np.flipud(np.rot90(game_screen)))
-        text_surface = [self.my_font.render('W, A, S, D: Move', False, (255, 255, 255)),
-                        self.my_font.render('Q, E: Turn', False, (255, 255, 255)),
-                        self.my_font.render('SPACE: Shoot', False, (255, 255, 255))]
-        self.display.blit(surf, (0, 0))
-        self.display.blit(text_surface[0], (0, 0))
-        self.display.blit(text_surface[1], (0, 30))
-        self.display.blit(text_surface[2], (0, 60))
+        if self.domain == 'vizdoom':
+            text_surface = [self.my_font.render('W, A, S, D: Move', False, (255, 255, 255)),
+                            self.my_font.render('Q, E: Turn', False, (255, 255, 255)),
+                            self.my_font.render('SPACE: Shoot', False, (255, 255, 255))]
+            self.display.blit(surf, (0, 0))
+            self.display.blit(text_surface[0], (0, 0))
+            self.display.blit(text_surface[1], (0, 30))
+            self.display.blit(text_surface[2], (0, 60))
+        else:
+            text_surface = [self.my_font.render('A, D: Move', False, (0, 0, 0))]
+            self.display.blit(surf, (0, 0))
+            self.display.blit(text_surface[0], (0, 0))
         pygame.display.update()
 
         return
@@ -117,6 +122,11 @@ class User:
                             action = 'turn_right'
                         if event.key == pygame.K_SPACE:
                             action = 'shoot'
+                    if self.domain == 'cartpole':
+                        if event.key == pygame.K_a:
+                            action = 'right'
+                        if event.key == pygame.K_d:
+                            action = 'left'
             if action is not None:
                 return {'action': action}
 
@@ -142,7 +152,7 @@ if __name__ == "__main__":
     if vers not in ['user', 'dock']:
         print('Can only user or docker!')
         exit()
-    if domain not in ['cartople', 'vizdoom']:
+    if domain not in ['cartpole', 'vizdoom']:
         print('Can only run vizdoom or cartpole!')
         exit()
 
@@ -152,8 +162,8 @@ if __name__ == "__main__":
         env = {'VERS': 'dock',
                'HOST': '0.0.0.0',
                'PORT': str(port)}
-        client = docker.from_env()
-        container = client.containers.run("wsudemo:latest", environment=env, ports=ports, detach=True)
+        #client = docker.from_env()
+        #container = client.containers.run("wsudemo:latest", environment=env, ports=ports, detach=True)
         import pygame
         from pygame.locals import *
         user_game = User(host, port, domain, novel, seed)
