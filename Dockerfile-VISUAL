@@ -1,0 +1,61 @@
+FROM python:3.6.9
+
+# ZDoom dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
+    nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
+    libopenal-dev timidity libwildmidi-dev unzip
+
+# Boost libraries
+RUN apt-get install -y libboost-all-dev
+
+# git clone smart env repo
+# RUN git clone https://github.com/jb3dahmen/SynSys-Updated.git synsys
+RUN echo "Skipping install of smartenv for the moment!"
+
+## This was a part of vizdoom but doesn't seem to be required
+# Python 3 dependencies
+# RUN apt-get install python3-dev python3-pip
+
+# pip libraries
+ADD source/requirements-GENERATOR.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# RUN pip show numpy
+
+# pip libraries
+ADD source/requirements-GENERATOR2.txt requirements2.txt
+RUN pip install -r requirements2.txt
+
+# Fixed pybullet install
+RUN git clone https://github.com/Christopher-P/bullet3.git tboult
+WORKDIR tboult/
+RUN git checkout TBPlanar
+RUN pip install .
+WORKDIR /
+
+# Smart env installation
+# WORKDIR synsys/SynSys
+# RUN ls
+# RUN python3.6 setup.py build_ext --inplace install
+WORKDIR /
+
+RUN echo 'loading.....'
+
+# Pygame install
+RUN pip install pygame
+RUN pip install docker
+# install
+RUN apt-get install -y mesa-utils libgl1-mesa-glx
+RUN apt-get install -y dbus
+# Load generator environments.
+ADD source/partial_env_generator /aiq-sail-on/partial_env_generator/
+
+# Add in visual script
+ADD visual.py /aiq-sail-on
+ADD source/server.py /aiq-sail-on
+
+# Change local dir
+WORKDIR /aiq-sail-on/
+
+ENTRYPOINT python server.py $VERS $HOST $PORT
