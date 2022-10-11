@@ -162,8 +162,8 @@ if __name__ == "__main__":
         env = {'VERS': 'dock',
                'HOST': '0.0.0.0',
                'PORT': str(port)}
-        #client = docker.from_env()
-        #container = client.containers.run("wsudemo:latest", environment=env, ports=ports, detach=True)
+        client = docker.from_env()
+        container = client.containers.run("wsudemo:latest", environment=env, ports=ports, detach=True)
         import pygame
         from pygame.locals import *
         user_game = User(host, port, domain, novel, seed)
