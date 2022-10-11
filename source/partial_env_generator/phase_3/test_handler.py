@@ -2,6 +2,7 @@
 import copy
 import json
 import random
+import time
 
 from .test_loader import TestLoader
 
@@ -16,6 +17,8 @@ class TestHandler:
 
         # Set parameters
         self.seed = seed
+        if self.seed is None:
+            self.seed = int(time.time())
         self.domain = domain
         self.novelty = novelty
         self.difficulty = difficulty

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import ast
 import time
 import json
 import socket
@@ -7,81 +8,19 @@ import pickle
 import docker
 import argparse
 
+
 import numpy as np
 import statistics
 
 
-class Dock:
-
-    def __init__(self, host, port):
-        self.HOST = host  # Standard loopback interface address (localhost)
-        self.PORT = port  # Port to listen on (non-privileged ports are > 1023)
-        self.conn = None
-        self.env = None
-
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.bind((self.HOST, self.PORT))
-            s.listen()
-            self.conn, addr = s.accept()
-            with self.conn:
-                self.listen()
-        return
-
-    def listen(self):
-        while True:
-            data = self.conn.recv(1024)
-            if not data:
-                break
-            # Convert to json
-            data = json.loads(data.decode("utf-8"))
-
-            # Filter command
-            if data['command'] == 'reset':
-                self.reset(data['domain'], data['novelty_level'], data['difficulty'], data['seed'])
-            if data['command'] == 'act':
-                self.act({'action': data['action']})
-            if data['command'] == 'exit':
-                return
-
-            # Send state
-            state = json.dumps({'is_done': self.env.is_episode_done(),
-                                'performance': self.env.information['performance']})
-            self.conn.sendall(bytes(state, encoding="utf-8"))
-
-            # Send image
-            if self.env.is_episode_done():
-                break
-            else:
-                self.conn.sendall(self.get_image())
-
-        return
-
-    def reset(self, domain, novelty, difficulty, seed):
-        from partial_env_generator.phase_3.test_handler import TestHandler
-        path = "partial_env_generator/phase_3/envs/"
-        self.env = None
-        self.env = TestHandler(domain=domain, novelty=novelty, trial_novelty=novelty,
-                               difficulty=difficulty, seed=seed, use_img=True, path=path,
-                               use_gui=False, ta2_generator_config={'start_zeroed_out': False})
-
-        return
-
-    def act(self, action):
-        performance = self.env.apply_action(action)
-        return performance
-
-    def get_image(self):
-        img = self.env.test.env.get_image()
-        return img.tobytes()
-
-
 class User:
 
-    def __init__(self, host, port, domain, novel):
+    def __init__(self, host, port, domain, novel, seed):
         pygame.init()
         pygame.font.init()
         self.domain = domain
         self.novel = novel
+        self.seed = seed
         self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
         self.display = pygame.display.set_mode((640, 480))
         self.socket = None
@@ -100,7 +39,8 @@ class User:
     def run(self):
         # Send initial game setting
         data = json.dumps({'command': 'reset', 'domain': self.domain, 'novelty_level': self.novel,
-                           'difficulty': 'easy', 'seed': 123})
+                           'difficulty': 'easy', 'seed': self.seed})
+        print(data)
         self.socket.sendall(bytes(data, encoding="utf-8"))
 
         while True:
@@ -188,6 +128,7 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--port', default='55555')
     parser.add_argument('-d', '--domain', default='vizdoom')
     parser.add_argument('-n', '--novel', action='store_true')
+    parser.add_argument('-s', '--seed', default=None)
     args = parser.parse_args()
 
     # Load in parameters
@@ -196,6 +137,7 @@ if __name__ == "__main__":
     port = int(args.port)
     domain = args.domain
     novel = args.novel
+    seed = args.seed
 
     if vers not in ['user', 'dock']:
         print('Can only user or docker!')
@@ -214,6 +156,6 @@ if __name__ == "__main__":
         container = client.containers.run("wsudemo:latest", environment=env, ports=ports, detach=True)
         import pygame
         from pygame.locals import *
-        user_game = User(host, port, domain, novel)
+        user_game = User(host, port, domain, novel, seed)
     elif vers == 'dock':
         dock_game = Dock(host, port)

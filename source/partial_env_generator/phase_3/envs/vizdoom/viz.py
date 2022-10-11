@@ -76,7 +76,7 @@ class SailonViz:
         game = vzd.DoomGame()
         package_path = self.path + "vizdoom/"
         game.load_config(package_path + 'basic.cfg')
-        game.set_doom_scenario_path(package_path + "phase_3_reduced.wad")
+        game.set_doom_scenario_path(package_path + "phase_3.wad")
 
         # Set in game limit
         game.set_episode_timeout(self.step_limit)
