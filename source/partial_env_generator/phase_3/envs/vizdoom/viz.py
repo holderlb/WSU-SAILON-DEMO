@@ -123,8 +123,8 @@ class SailonViz:
 
         # Set seed here
         random.seed(self.seed)
-        np.random.seed(self.seed)
-        game.set_seed(self.seed)
+        np.random.seed(int(self.seed))
+        game.set_seed(int(self.seed))
 
         # Call this at the end since no more changes can be made after
         game.init()
@@ -365,7 +365,7 @@ class SailonViz:
         self.game.new_episode()
 
         # Docs suggest putting it here too
-        self.game.set_seed(self.seed)
+        self.game.set_seed(int(self.seed))
 
         # Get state
         observation = self.get_state(initial=True)

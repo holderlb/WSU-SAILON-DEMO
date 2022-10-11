@@ -14,7 +14,7 @@ NOTHING = 8
 class Agents:
 
     def __init__(self, level, difficulty, mock, seed):
-        np.random.seed(seed)
+        np.random.seed(int(seed))
         random.seed(seed)
         # level and novelty selections
         self.level = level

@@ -97,7 +97,7 @@ class TestLoader:
 
         # Set seeds (thread wide here)
         random.seed(self.seed)
-        np.random.seed(self.seed)
+        np.random.seed(int(self.seed))
 
         # Load the test
         self.load_test()
