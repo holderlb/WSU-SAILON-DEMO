@@ -1,41 +1,74 @@
 # Installation
-* Requirments:
+* Requirements:
   * [docker](https://docs.docker.com/engine/install/ubuntu/)
+  * [docker-compose](https://docs.docker.com/compose/install/)
+
   * python 3.6
-    * Numpy
-    * PyGame
-    * [python docker api](https://docker-py.readthedocs.io/en/stable/)
+    * python-dateutil==2.8.1
+    * pytz
+    * psutil
+    * pika
+    * blosc
+    * numpy
+    * opencv-python
     
+Python packages can be pip installed via [requirements.txt](source%2Frequirements.txt).
+
 # Building
-The docker file must be built before running. To do so run the following command:
+The docker file must be built before running. 
+This only needs to be done once!
+To do so run the following command:
 ```
-docker build -f Dockerfile-VISUAL -t wsudemo .
+sudo docker-compose -f source/generator/portable-gui build
 ```
 The build process will take several minutes.
     
 # Running
 To run the visual demo enter the following command:
 ```
+cd source/
 python visual.py
 ```
 
+* You will be prompted for a password as the python script internally calls docker-compose. 
+* It can take up to 30 seconds for the window to appear.
+* It can take up to 30 seconds for the demo to shutdown properly!
 ### Options
-* ``--domain <val>`` {cartpole, vizdoom}, defualts to vizdoom.
-* ``--novel`` Enable novelty, defaults to false. 
-* ``--seed <val>`` {int} Used to set the seed, defaults to random seed.
+* ``--domain <val>`` {cartpole, vizdoom}, defaults to vizdoom.
+* ``--difficulty <val>`` {easy, medium, hard} defaults to easy.
+* ``--novelty <val>`` defaults to 200.
 
 Example:
 ```
-python visual.py --novel --seed 123 --domain vizdoom
+python visual.py --domain cartpole
 ```
 
 ## Playing
-To play select the pygame window and press the key correpsonding to the desired action. 
+To play select the OpenCV window and press the key corresponding to the desired action. 
 One key press per action and frame update.
 
+### ViZDoom
+* a &rarr; left 
+* d &rarr;  right
+* w &rarr; forward
+* s&rarr; backward
+* j&rarr; shoot
+* k&rarr; turn left
+* l&rarr; turn right
+* q&rarr; QUIT
+* any other key is nothing
+
+### CartPole
+* a &rarr; left
+* d &rarr;  right
+* w &rarr; forward
+* s &rarr; backward
+* q &rarr; QUIT
+* any other key is nothing
+
 # Notes
-* The doom game engine is a frame late for updating ammo used. Shoot commands act imediatly and the ammo graphic will be updated next tick.
-* If you cannot use docker on your system due to privlage issues, the dockerfile contains the installation instructions. 
+* The doom game engine is a frame late for updating ammo used. Shoot commands act immediately and the ammo graphic will be updated next tick.
+* If you cannot use docker on your system due to privilege issues, the dockerfile contains the installation instructions. 
 # Debug
 ### Port in use
 If the default port 55555 is already in use, another port can be specified with: ```--port <val>```. 

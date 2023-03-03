@@ -28,6 +28,7 @@ import threading
 import cv2
 import subprocess
 import argparse
+import configparser
 
 
 from objects.TA2_logic import TA2Logic
@@ -351,13 +352,19 @@ if __name__ == "__main__":
     # Handle command line args
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--domain', default='vizdoom')
+    parser.add_argument('--difficulty', default='easy')
+    parser.add_argument('-n', '--novelty', default='200')
     args = parser.parse_args()
 
-
-
     domain = args.domain
+    novelty = str(args.novelty)
+    difficulty = args.difficulty
 
-
+    # Check for user entry errors
+    if domain not in ['cartpole', 'vizdoom']:
+        print('Only domains allowed are cartpole and vizdoom!')
+    if difficulty not in ['easy', 'medium', 'hard']:
+        print('Only allowed difficulties are easy, medium and hard')
 
     # Select correct config
     config_name = None
@@ -366,10 +373,16 @@ if __name__ == "__main__":
     elif domain == 'cartpole':
         config_name = '--config=generator/configs/partial/gui-cartpole.config'
 
+    # Update generator config
+    config = configparser.ConfigParser()
+    config.read('generator/configs/partial/TA1.config')
+    config['sail-on']['novelty'] = novelty
+    config['sail-on']['difficulty'] = difficulty
+    with open('generator/configs/partial/TA1.config', 'w') as configfile:
+        config.write(configfile)
+
     # Set params for future arg parser
     sys.argv = sys.argv[0:1] + [config_name, '--printout', '--ignore-secret']
-
-    print(sys.argv)
 
     # Get thread sudo permissions for docker-compose
     enter_sudo()
