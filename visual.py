@@ -1,16 +1,12 @@
 #!/usr/bin/python
 import sys
-import ast
-import time
 import json
 import socket
-import pickle
 import docker
 import argparse
 
 
 import numpy as np
-import statistics
 
 
 class User:
@@ -133,7 +129,7 @@ class User:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--version', default='user')
+    parser.add_argument('--', '--version', default='user')
     parser.add_argument('-r', '--host', default='127.0.0.1')
     parser.add_argument('-p', '--port', default='55555')
     parser.add_argument('-d', '--domain', default='vizdoom')
