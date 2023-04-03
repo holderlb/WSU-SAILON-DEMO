@@ -1,5 +1,6 @@
 # Installation
 * Requirements:
+  * Ubuntu 22.04 LTS
   * [docker](https://docs.docker.com/engine/install/ubuntu/)
 
 
