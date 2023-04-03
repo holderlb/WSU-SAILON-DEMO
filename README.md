@@ -3,7 +3,10 @@
   * Ubuntu 22.04 LTS
   * [docker](https://docs.docker.com/engine/install/ubuntu/)
   * python 3.6
-    * c
+    * opencv-python
+    * psutil
+    * blosc
+    * pika
 
 Python packages can be pip installed via [requirements.txt](source/requirements.txt).
 
