@@ -1,25 +1,14 @@
 # Installation
 * Requirements:
   * [docker](https://docs.docker.com/engine/install/ubuntu/)
-  * [docker-compose](https://docs.docker.com/compose/install/)
 
-  * python 3.6
-    * python-dateutil==2.8.1
-    * pytz
-    * psutil
-    * pika
-    * blosc
-    * numpy
-    * opencv-python
-    
-Python packages can be pip installed via [requirements.txt](source%2Frequirements.txt).
 
 # Building
 The docker file must be built before running. 
 This only needs to be done once!
 To do so run the following command:
 ```
-sudo docker-compose -f source/generator/portable-gui build
+sudo docker compose -f source/generator/portable-gui.yml build
 ```
 The build process will take several minutes.
     
