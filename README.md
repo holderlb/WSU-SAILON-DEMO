@@ -16,11 +16,7 @@ The docker file must be built before running.
 This only needs to be done once!
 To do so run the following command:
 ```
-<<<<<<< HEAD
 sudo docker-compose -f source/generator/portable-gui.yml build
-=======
-sudo docker compose -f source/generator/portable-gui.yml build
->>>>>>> dfcd1bb8c4c7695510bc741d7bacefcb10acd454
 ```
 The build process will take several minutes.
 
