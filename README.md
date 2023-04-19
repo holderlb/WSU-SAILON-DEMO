@@ -19,10 +19,12 @@ The docker file must be built before running.
 This only needs to be done once!
 To do so run the following command:
 ```
-sudo docker-compose -f source/generator/portable-gui build
+sudo docker-compose -f source/generator/portable-gui.yml build
 ```
 The build process will take several minutes.
-    
+
+---
+
 # Running
 To run the visual demo enter the following command:
 ```
@@ -33,6 +35,8 @@ python visual.py
 * You will be prompted for a password as the python script internally calls docker-compose. 
 * It can take up to 30 seconds for the window to appear.
 * It can take up to 30 seconds for the demo to shutdown properly!
+* You may see many "run() Connection was closed, reconnecting...", this is normal.
+
 ### Options
 * ``--domain <val>`` {cartpole, vizdoom}, defaults to vizdoom.
 * ``--difficulty <val>`` {easy, medium, hard} defaults to easy.
@@ -40,12 +44,16 @@ python visual.py
 
 Example:
 ```
-python visual.py --domain cartpole
+python visual.py --domain cartpole --novelty 201 --difficulty easy
 ```
+
+---
 
 ## Playing
 To play select the OpenCV window and press the key corresponding to the desired action. 
 One key press per action and frame update.
+
+* Note: Two non-novel episodes will proceed the selected novel episodes.
 
 ### ViZDoom
 * a &rarr; left 
