@@ -2,6 +2,7 @@
 import copy
 import sys
 import json
+import csv
 import zlib
 import os.path
 
@@ -23,6 +24,7 @@ class TestLoader:
         self.domain = domain
         self.novelty_level = novelty_level
         self.trial_novelty = trial_novelty
+
         self.seed = seed
         self.difficulty = difficulty
         self.day_offset = day_offset
