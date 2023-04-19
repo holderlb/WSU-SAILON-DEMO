@@ -337,13 +337,13 @@ def enter_sudo():
 
 
 def start_generator():
-    cmd_str = "sudo docker-compose -f generator/portable-gui.yml up -d"
+    cmd_str = "sudo docker compose -f generator/portable-gui.yml up -d"
     subprocess.run(cmd_str, shell=True)
     return
 
 
 def stop_generator():
-    cmd_str = "sudo docker-compose -f generator/portable-gui.yml down"
+    cmd_str = "sudo docker compose -f generator/portable-gui.yml down"
     subprocess.run(cmd_str, shell=True)
     return
 
