@@ -32,7 +32,7 @@ python visual.py
 * You will be prompted for a password as the python script internally calls docker-compose. 
 * It can take up to 30 seconds for the window to appear.
 * It can take up to 30 seconds for the demo to shutdown properly!
-* You may see many "run() Connection was closed, reconnecting...", this is normal.
+* You may see ~10 "run() Connection was closed, reconnecting...", this is normal.
 
 ### Options
 * ``--domain <val>`` {cartpole, vizdoom}, defaults to vizdoom.
@@ -75,6 +75,7 @@ One key press per action and frame update.
 * The doom game engine is a frame late for updating ammo used. Shoot commands act immediately and the ammo graphic will be updated next tick.
 * If you cannot use docker on your system due to privilege issues, the dockerfile contains the installation instructions. 
 # Debug
+
 ### Port in use
 If the default port 55555 is already in use, another port can be specified with: ```--port <val>```. 
 
@@ -91,3 +92,10 @@ Find the ID of the latst container then enter:
 ```
 docker kill <id>
 ```
+
+### Stuck on run() Connection was closed, reconnecting...
+If you see more than 20 of these you may need to change
+```
+docker compose --> docker-compose
+```
+inside of [visual.py](source%2Fvisual.py).
