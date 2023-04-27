@@ -57,6 +57,7 @@ class TA2Agent(TA2Logic):
         super().__init__()
 
         if domain == 'vizdoom':
+            self.max_tick = 2000
             print('controls a:left, d: right, w:forward, s:backward, j:shoot, k:turn left, l:turn right, q:QUIT, any other key: nothing')
             self.possible_answers = list()
             self.possible_answers.append(dict({'action': 'nothing'}))
@@ -85,6 +86,7 @@ class TA2Agent(TA2Logic):
                                     'k': 6,
                                     'j': 5})
         elif domain == 'cartpole':
+            self.max_tick = 200
             print('controls a:left, d: right, w:forward, s:backward, q:QUIT, any other key: nothing')
             self.possible_answers = list()
             self.possible_answers.append(dict({'action': 'nothing'}))
@@ -103,6 +105,9 @@ class TA2Agent(TA2Logic):
                                     'd': 2,
                                     'w': 3,
                                     's': 4})
+
+        self.last_performance = 0.0
+        self.tick = 0.0
 
         # This variable can be set to true and the system will attempt to end training at the
         # completion of the current episode, or sooner if possible.
@@ -128,6 +133,7 @@ class TA2Agent(TA2Logic):
             A dictionary of your label prediction of the format {'action': label}.  This is
                 strictly enforced and the incorrect format will result in an exception being thrown.
         """
+        self.tick = self.tick + 1
         found_error = False
         image = feature_vector['image']
         if image is None:
@@ -144,9 +150,23 @@ class TA2Agent(TA2Logic):
         s = 640.0 / image.shape[1]
         dim = (640, int(image.shape[0] * s))
 
-        resized = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+        # Font, default to simple
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        # fontScale
+        font_scale = 0.4
+        # Blue color in BGR
+        color = (255, 255, 255)
+        # Line thickness of 2 px
+        thickness = 1
 
-        cv2.imshow('Generator', resized)
+        image = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+
+        image = cv2.putText(image, 'Performance: ' + str(self.last_performance), (50, 50), font,
+                            font_scale, color, thickness, cv2.LINE_AA)
+        image = cv2.putText(image, 'Actions Remaining: ' + str(int(self.max_tick - self.tick)), (50, 70), font,
+                            font_scale, color, thickness, cv2.LINE_AA)
+
+        cv2.imshow('Generator', image)
         keycode = cv2.waitKey(int(10 * 1000))
         key_pressed = ' '
         if int(keycode) in self.keycode:
@@ -194,7 +214,6 @@ class TA2Agent(TA2Logic):
             A dictionary of your label prediction of the format {'action': label}.  This is
                 strictly enforced and the incorrect format will result in an exception being thrown.
         """
-
         feature_debug = copy.deepcopy(feature_vector)
         feature_debug['image'] = list()
         self.log.debug('Training Instance: feature_vector={}  feature_label={}'.format(
@@ -205,7 +224,8 @@ class TA2Agent(TA2Logic):
         return label_prediction
 
     def training_performance(self, performance: float, feedback: dict = None):
-        pass
+        self.last_performance = performance
+        return
 
     def training_episode_end(self, performance: float, feedback: dict = None) -> \
             (float, float, int, dict):
@@ -229,12 +249,12 @@ class TA2Agent(TA2Logic):
             A JSON-valid dict characterizing the novelty.
         """
         self.log.info('Training Episode End: performance={}'.format(performance))
-
+        self.last_performance = performance
         novelty_probability = random.random()
         novelty_threshold = 0.8
         novelty = 0
         novelty_characterization = dict()
-
+        self.tick = 0
         return novelty_probability, novelty_threshold, novelty, novelty_characterization
 
     def training_end(self):
@@ -289,7 +309,8 @@ class TA2Agent(TA2Logic):
         return label_prediction
 
     def testing_performance(self, performance: float, feedback: dict = None):
-        pass
+        self.last_performance = performance
+        return
 
     def testing_episode_end(self, performance: float, feedback: dict = None) -> \
             (float, float, int, dict):
@@ -312,12 +333,12 @@ class TA2Agent(TA2Logic):
             A JSON-valid dict characterizing the novelty.
         """
         self.log.info('Testing Episode End: performance={}'.format(performance))
-
+        self.last_performance = performance
         novelty_probability = random.random()
         novelty_threshold = 0.8
         novelty = random.choice(list(range(4)))
         novelty_characterization = dict()
-
+        self.tick = 0
         return novelty_probability, novelty_threshold, novelty, novelty_characterization
 
     def testing_end(self):

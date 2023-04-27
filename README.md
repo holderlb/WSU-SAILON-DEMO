@@ -16,7 +16,7 @@ The docker file must be built before running.
 This only needs to be done once!
 To do so run the following command:
 ```
-sudo docker-compose -f source/generator/portable-gui.yml build
+sudo docker compose -f source/generator/portable-gui.yml build
 ```
 The build process will take several minutes.
 
@@ -29,7 +29,7 @@ cd source/
 python visual.py
 ```
 
-* You will be prompted for a password as the python script internally calls docker-compose. 
+* You will be prompted for a password as the python script internally calls docker compose. 
 * It can take up to 30 seconds for the window to appear.
 * It can take up to 30 seconds for the demo to shutdown properly!
 * You may see ~10 "run() Connection was closed, reconnecting...", this is normal.
